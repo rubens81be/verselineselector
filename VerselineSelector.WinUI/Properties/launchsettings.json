@@ -1,0 +1,10 @@
+﻿{
+    "profiles": {
+      "VerselineSelector.WinUI (Package)": {
+        "commandName": "MsixPackage"
+      },
+      "VerselineSelector.WinUI (Unpackaged)": {
+        "commandName": "Project"
+      }
+    }
+}

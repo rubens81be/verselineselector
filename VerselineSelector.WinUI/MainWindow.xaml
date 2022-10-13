@@ -1,0 +1,69 @@
+﻿<windowex:WindowEx
+    x:Class="VerselineSelector.WinUI.MainWindow"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:VerselineSelector.WinUI"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:fa="using:FontAwesome.Sharp"
+    xmlns:windowex="using:WinUIEx"
+    MinWidth="500"
+    MinHeight="500"
+    PersistenceId="MainWindow"
+    mc:Ignorable="d">
+    <windowex:WindowEx.Backdrop>
+        <windowex:MicaSystemBackdrop/>
+    </windowex:WindowEx.Backdrop>
+
+    <Grid>
+
+        <Grid.RowDefinitions>
+            <RowDefinition Height="35" />
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <RelativePanel Grid.Row="0" Margin="5">
+            <StackPanel Orientation="Horizontal">
+                <TextBlock Text="Paragraaf:" Padding="5,3" />
+                <ComboBox x:Name="CurrentParagraph" RelativePanel.AlignLeftWithPanel="True" ItemsSource="{Binding Paragraphs}" SelectedItem="{Binding CurrentParagraph}" DisplayMemberPath="Paragraph.Title" Width="100" />
+            </StackPanel>
+            <StackPanel Orientation="Horizontal">
+                <TextBlock Text="Patiënt:" Padding="5,3" />
+                <ComboBox x:Name="CurrentPatient" RelativePanel.AlignLeftWithPanel="True" ItemsSource="{Binding Patients}" SelectedItem="{Binding CurrentPatient}" DisplayMemberPath="Name" Width="100" />
+            </StackPanel>
+            <TextBlock RelativePanel.AlignLeftWithPanel="True" Text="{Binding SelectedVerselines, Converter={StaticResource StringConverter}}" VerticalAlignment="Center" TextAlignment="Center" Padding="5,3" />
+            <TextBox RelativePanel.AlignRightWithPanel="True" Width="350" Text="{Binding SearchText, UpdateSourceTrigger=PropertyChanged}" IsEnabled="{Binding CanSearch}" VerticalContentAlignment="Center" PlaceholderText="Zoek in de paragraaftekst..."/>
+        </RelativePanel>
+
+        <TabView Grid.Row="1" Margin="10" BorderThickness="1">
+            <TabViewItem Header="{Binding CurrentParagraph.Paragraph.Description}">                
+                <ListView ItemsSource="{Binding Verselines}" SelectionMode="Single" BorderThickness="0">
+                    <ListView.ItemTemplate>
+                        <DataTemplate>
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock Text="{Binding Verseline.Sequence}" TextAlignment="Right" Margin="0,0,5,0" Width="15" Foreground="DarkGray" />
+                                <TextBlock Text="{Binding Verseline.VerselineNumber}" TextAlignment="Right" Margin="5,0" Width="40" Foreground="DarkGray" />
+                                <StackPanel Width="20" HorizontalAlignment="Center" Visibility="{Binding Path=HasAdditionalInformation, Converter={StaticResource VisibilityConverter}}">
+                                    
+                                </StackPanel>
+                                <TextBlock Width="{Binding IndentationLevel}" />
+                                <TextBlock Text="{Binding MinimalChecksAsString}" HorizontalAlignment="Right" Width="25" 
+                                    Visibility="{Binding Verseline.HasCheckbox, Converter={StaticResource InverseVisibilityConverter}}"
+                                    Foreground="{Binding IsMinimumCheckConditionSatisfied, Converter={StaticResource ColourConverter}}"/>
+                                <CheckBox  IsChecked="{Binding IsChecked}" Command="{Binding DataContext.SelectVerselineCommand, RelativeSource={RelativeSource Mode=TemplatedParent}}" CommandParameter="{Binding}"
+                                    HorizontalAlignment="Right" Margin="0,0,15,0" Width="25" Visibility="{Binding Verseline.HasCheckbox, Converter={StaticResource VisibilityConverter}}" 
+                                    IsEnabled="{Binding CanCheck}"/>
+                                <TextBlock Margin="5,0,0,0" Width="700" TextWrapping="Wrap" FontWeight="{Binding IsParagraphTitle, Converter={StaticResource FontWeightBoldConverter}}" />
+                                <!--behaviour:TextBlockBehavior.InlineSource="{Binding InlineCollection}" />-->
+                            </StackPanel>
+                        </DataTemplate>
+                    </ListView.ItemTemplate>
+                </ListView>
+            </TabViewItem>
+            <TabViewItem Header="Bijlage" ToolTipService.ToolTip="{Binding CurrentParagraph.RequestFormA.Uri}">
+                <!--<ctrl:PdfViewer />-->
+            </TabViewItem>
+        </TabView>
+    </Grid>
+
+</windowex:WindowEx>

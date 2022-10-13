@@ -1,0 +1,53 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+	<TargetFramework>net6.0-windows</TargetFramework>
+    <Nullable>enable</Nullable>
+    <UseWPF>true</UseWPF>
+    <StartupObject>VerselineSelector.WPF.App</StartupObject>
+  </PropertyGroup>
+  <Target Name="RemoveDuplicateAnalyzers" BeforeTargets="CoreCompile">
+	  <!-- Work around https://github.com/dotnet/wpf/issues/6792 -->
+	  <ItemGroup>
+		  <FilteredAnalyzer Include="@(Analyzer-&gt;Distinct())" />
+		  <Analyzer Remove="@(Analyzer)" />
+		  <Analyzer Include="@(FilteredAnalyzer)" />
+	  </ItemGroup>
+  </Target>
+
+  <ItemGroup>
+    <ApplicationDefinition Remove="App.xaml" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Remove="appsettings.json" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="CommunityToolkit.Mvvm" Version="8.0.0" />
+    <PackageReference Include="FontAwesome.Sharp" Version="6.1.1" />
+    <PackageReference Include="FontAwesome6.Fonts" Version="2.3.0" />
+    <PackageReference Include="Microsoft.Extensions.Hosting" Version="6.0.1" />
+    <PackageReference Include="Microsoft.Extensions.Hosting.Abstractions" Version="6.0.0" />
+    <PackageReference Include="Microsoft.Web.WebView2" Version="1.0.1293.44" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="appsettings.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </EmbeddedResource>
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\VerselineSelector.DAL\VerselineSelector.DAL.csproj" />
+    <ProjectReference Include="..\VerselineSelector.Domain\VerselineSelector.Domain.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Reference Include="System.Runtime.InteropServices.WindowsRuntime">
+      <HintPath>..\..\..\..\..\..\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.8\Facades\System.Runtime.InteropServices.WindowsRuntime.dll</HintPath>
+    </Reference>   
+  </ItemGroup>
+
+</Project>
